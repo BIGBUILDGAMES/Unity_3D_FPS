@@ -18,6 +18,8 @@ public class PlayerInput : MonoBehaviour
     public float horizontal { get; private set; }  // 감지된 회전 입력값
     public bool fire { get; private set; }      // 감지된 발사 입력값
     public bool reload { get; private set; }    // 감지된 재장전 입력값
+    public bool move { get; private set; }    // 감지된 재장전 입력값
+    public bool move2 { get; private set; }    // 감지된 재장전 입력값
 
     void Update()
     {
@@ -28,6 +30,7 @@ public class PlayerInput : MonoBehaviour
             horizontal = 0;
             fire = false;
             reload = false;
+            move2 = false;
             return;
         }
 
@@ -39,5 +42,10 @@ public class PlayerInput : MonoBehaviour
         fire = Input.GetButton(fireButtonName);
         // reload에 관한 입력 감지
         reload = Input.GetButtonDown(reloadButtonName);
+
+        if (Input.GetButtonDown(moveZAxisName) || Input.GetButtonDown(moveXAxisName))
+            move2 = true;
+        else
+            move2 = false;
     }
 }

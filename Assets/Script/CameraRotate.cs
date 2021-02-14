@@ -28,6 +28,6 @@ public class CameraRotate : MonoBehaviour
         transform.eulerAngles = new Vector3(
             gameObject.transform.rotation.x,
             mouseX, 
-            gameObject.transform.rotation.z - 90f);
+            gameObject.transform.rotation.z);
     }    
 }

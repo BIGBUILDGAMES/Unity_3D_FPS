@@ -11,6 +11,8 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody playeRigidbody;  // 플레이어 캐릭터의 리지드바디
     private Animator playerAnimator;    // 플레이어 캐릭터의 애니메이터
 
+    public Transform cameraArm;
+
     void Start()
     {
         // 사용할 컨포넌트들의 참조 가져오기
@@ -42,10 +44,15 @@ public class PlayerMovement : MonoBehaviour
             movex * transform.right * speed * Time.fixedDeltaTime;
 
         // 리지드바디를 이용해 게임 오브젝트 위치 변경
-
         if ((movez > 0f || movez < 0f) && (movex > 0f || movex < 0f))
             playeRigidbody.MovePosition(playeRigidbody.position + (distanceZ + distanceX) / 1.4142135623f);
         else
             playeRigidbody.MovePosition(playeRigidbody.position + distanceZ + distanceX);
+
+        //// 보는 방향으로 회전
+        //if (playerInput.move2)
+        //{
+        //    transform.rotation = cameraArm.transform.rotation;
+        //}
     }
 }
