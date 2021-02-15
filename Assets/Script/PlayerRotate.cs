@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraRotate : MonoBehaviour
+public class PlayerRotate : MonoBehaviour
 {
     public float rotateSpeed = 120;
 
@@ -26,8 +26,8 @@ public class CameraRotate : MonoBehaviour
         //    mouseZ = -90;    // mouseY 90도 고정
         //}
         transform.eulerAngles = new Vector3(
-            mouseZ,
+            gameObject.transform.rotation.x,
             mouseX,
             gameObject.transform.rotation.z);
-    }    
+    }
 }
