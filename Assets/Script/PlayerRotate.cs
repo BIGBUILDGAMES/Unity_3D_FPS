@@ -9,6 +9,17 @@ public class PlayerRotate : MonoBehaviour
     float mouseX; // 마우스 X각도
     float mouseZ; // 마우스 X각도
 
+    float rotX;
+    float rotY;
+    float rotZ;
+
+    private void Start()
+    {
+        rotX = transform.rotation.x;
+        rotY = transform.rotation.y;
+        rotZ = transform.rotation.z;
+    }
+
     void LateUpdate()
     {
         float horizontal = Input.GetAxis("Mouse X"); // 마우스의 X축 움직임을 감지
@@ -25,9 +36,15 @@ public class PlayerRotate : MonoBehaviour
         //{
         //    mouseZ = -90;    // mouseY 90도 고정
         //}
-        transform.eulerAngles = new Vector3(
-            gameObject.transform.rotation.x,
-            mouseX,
-            gameObject.transform.rotation.z);
+        //transform.eulerAngles = new Vector3(
+        //    gameObject.transform.rotation.x,
+        //    mouseX,
+        //    gameObject.transform.rotation.z);
+
+
+        //transform.rotation = Quaternion.Euler(rotX, rotY, rotZ);
+
+        //transform.Rotate(Vector3.up, rotX, Space.World);  // 가로
+        transform.Rotate(Vector3.up, mouseX, Space.World);  // 가로        
     }
 }

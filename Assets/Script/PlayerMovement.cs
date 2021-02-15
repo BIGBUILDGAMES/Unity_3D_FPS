@@ -34,25 +34,39 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
-        float movez = playerInput.vertical;
-        float movex = playerInput.horizontal;
-        // 상대적으로 이동할 거리 계산
-        Vector3 distanceZ =
-            movez * transform.forward * speed * Time.fixedDeltaTime;
+        //float movez = playerInput.vertical;
+        //float movex = playerInput.horizontal;
+        //// 상대적으로 이동할 거리 계산
+        //Vector3 distanceZ =
+        //    movez * transform.forward * speed * Time.fixedDeltaTime;
 
-        Vector3 distanceX =
-            movex * transform.right * speed * Time.fixedDeltaTime;
+        //Vector3 distanceX =
+        //    movex * transform.right * speed * Time.fixedDeltaTime;
 
-        // 리지드바디를 이용해 게임 오브젝트 위치 변경
-        if ((movez > 0f || movez < 0f) && (movex > 0f || movex < 0f))
-            playeRigidbody.MovePosition(playeRigidbody.position + (distanceZ + distanceX) / 1.4142135623f);
-        else
-            playeRigidbody.MovePosition(playeRigidbody.position + distanceZ + distanceX);
+        //// 리지드바디를 이용해 게임 오브젝트 위치 변경
+        //if ((movez > 0f || movez < 0f) && (movex > 0f || movex < 0f))
+        //    playeRigidbody.MovePosition(playeRigidbody.position + (distanceZ + distanceX) / 1.4142135623f);
+        //else
+        //    playeRigidbody.MovePosition(playeRigidbody.position + distanceZ + distanceX);
 
         //// 보는 방향으로 회전
         //if (playerInput.move2)
         //{
         //    transform.rotation = cameraArm.transform.rotation;
         //}
+
+        Vector2 moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+
+        bool isMove = moveInput.magnitude != 0;
+
+        if (isMove)
+        {
+            Vector3 lookForward = new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z).normalized;
+            Vector3 lookRight = new Vector3(cameraArm.right.x, 0f, cameraArm.right.z).normalized;
+            Vector3 moveDir = lookForward * moveInput.y + lookRight * moveInput.x;
+
+            //transform.forward = lookForward;
+            transform.position += moveDir * Time.deltaTime * 5f;
+        }
     }
 }

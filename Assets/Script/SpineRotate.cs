@@ -5,7 +5,7 @@ using UnityEngine;
 public class SpineRotate : MonoBehaviour
 {
     public float speed = 120;
-    public Transform playerTransform;
+    public Transform playerTrans;
 
     float mouseX; // 마우스 X각도
     float mouseZ; // 마우스 X각도
@@ -48,10 +48,10 @@ public class SpineRotate : MonoBehaviour
         //    playerTransform.transform.rotation.x,
         //    mouseX,
         //    playerTransform.transform.rotation.z);
-        transform.Rotate(Vector3.right, mouseZ, Space.World);  //  세로
+        playerTrans.Rotate(Vector3.right, mouseZ, Space.World);  //  세로
         transform.Rotate(Vector3.up, mouseX, Space.World);  // 가로
 
-        
+        //Debug.Log("" + mouseZ);
     }
 
     //public Transform target; // 바라볼 타겟 
