@@ -68,5 +68,9 @@ public class PlayerMovement : MonoBehaviour
             //transform.forward = lookForward;
             transform.position += moveDir * Time.deltaTime * 5f;
         }
+
+
+        // 앉기
+        playerAnimator.SetBool("SitDown", playerInput.sitDown);
     }
 }

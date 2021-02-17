@@ -20,6 +20,7 @@ public class PlayerInput : MonoBehaviour
     public bool reload { get; private set; }    // 감지된 재장전 입력값
     public bool move { get; private set; }    // 감지된 재장전 입력값
     public bool move2 { get; private set; }    // 감지된 재장전 입력값
+    public bool sitDown { get; private set; }    // 감지된 앉기 입력값
 
     void Update()
     {
@@ -42,6 +43,8 @@ public class PlayerInput : MonoBehaviour
         fire = Input.GetButton(fireButtonName);
         // reload에 관한 입력 감지
         reload = Input.GetButtonDown(reloadButtonName);
+        // 앉기에 관한 입력 감지
+        sitDown = Input.GetButton(SitButtonName);
 
         if (Input.GetButtonDown(moveZAxisName) || Input.GetButtonDown(moveXAxisName))
             move2 = true;
