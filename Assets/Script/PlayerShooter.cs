@@ -27,26 +27,41 @@ public class PlayerShooter : MonoBehaviour {
         gun.gameObject.SetActive(false);
     }
 
-    private void Update() {
-        // 입력을 감지하고 총 발사하거나 재장전
-        if (playerInput.fire)
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.W) && playerInput.run)
         {
-            // 발사 입력 감지 시 총 발사
-            gun.Fire();
+            playerAnimator.SetBool("Fire", false);
+        }
+        else
+        {
             if (gun.magAmmo != 0)
             {
-                playerAnimator.SetTrigger("Fire");
+                // 탄이 있을때만 발사 애니메이션 재생
+                playerAnimator.SetBool("Fire", playerInput.fire);
+
+                // 입력을 감지하고 총 발사
+                if (playerInput.fire)
+                {
+                    // 발사 입력 감지 시 총 발사
+                    gun.Fire();
+                }
             }
-        }
-        else if (playerInput.reload)
-        {
-            // 재장전 입력 감지 시 재장전
-            if (gun.Reload())
+            else if (gun.magAmmo == 0)
             {
-                // 재장전 성공 시에만 재장전 애니메이션 재생
-                playerAnimator.SetTrigger("Reload");
+                playerAnimator.SetBool("Fire", false);
             }
-        }
+
+            if (playerInput.reload)
+            {
+                // 재장전 입력 감지 시 재장전
+                if (gun.Reload())
+                {
+                    // 재장전 성공 시에만 재장전 애니메이션 재생
+                    playerAnimator.SetTrigger("Reload");
+                }
+            }
+        }  
 
         // 남은 탄알 UI 갱신
         UpdateUI();

@@ -5,7 +5,7 @@ using UnityEngine;
 // 사용자 입력에 따라 플레이어 캐릭터를 움직이는 스크립트
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 5f;
+    public float speed = 4f;
 
     private PlayerInput playerInput;    // 플레이어 입력을 알려주는 컴포넌트
     private Rigidbody playeRigidbody;  // 플레이어 캐릭터의 리지드바디
@@ -27,9 +27,11 @@ public class PlayerMovement : MonoBehaviour
         Move();
 
         // 입력값에 따라 애니메이터의 Move 파라미터값 변경
-
         playerAnimator.SetFloat("Vertical", playerInput.vertical);
         playerAnimator.SetFloat("Horizontal", playerInput.horizontal);
+
+        // 앉기
+        playerAnimator.SetBool("SitDown", playerInput.sitDown);
     }
 
     private void Move()
@@ -55,22 +57,39 @@ public class PlayerMovement : MonoBehaviour
         //    transform.rotation = cameraArm.transform.rotation;
         //}
 
-        Vector2 moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        Vector2 moveInput = new Vector2(playerInput.horizontal, playerInput.vertical);
 
-        bool isMove = moveInput.magnitude != 0;
+        bool isMove = moveInput.magnitude != 0f;
 
         if (isMove)
         {
             Vector3 lookForward = new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z).normalized;
             Vector3 lookRight = new Vector3(cameraArm.right.x, 0f, cameraArm.right.z).normalized;
             Vector3 moveDir = lookForward * moveInput.y + lookRight * moveInput.x;
+            speed = 4;
+            playerAnimator.SetBool("Run", false);
 
+            if (Input.GetKey(KeyCode.W) && playerInput.run)
+            {
+                playerAnimator.SetBool("Run", true);
+                speed = 18;
+                moveDir = lookForward * moveInput.y;
+            }          
+
+            if ((moveInput.y > 0f || moveInput.y < 0f) && (moveInput.x > 0f || moveInput.x < 0f))
+                playeRigidbody.MovePosition(playeRigidbody.position + moveDir * Time.deltaTime * speed / 1.4142135623f);
+            else
+                playeRigidbody.MovePosition(playeRigidbody.position + moveDir * Time.deltaTime * speed);
+
+            //transform.position += moveDir * Time.deltaTime * 5f;
             //transform.forward = lookForward;
-            transform.position += moveDir * Time.deltaTime * 5f;
         }
+        //else if (playerInput.vertical > 0 && playerInput.run) // 달리기
+        //{
+        //    Vector3 lookForward = new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z).normalized;
+        //    Vector3 moveDir = lookForward * moveInput.y;
 
-
-        // 앉기
-        playerAnimator.SetBool("SitDown", playerInput.sitDown);
+        //    playeRigidbody.MovePosition(playeRigidbody.position + moveDir * Time.deltaTime * 8f);
+        //}
     }
 }

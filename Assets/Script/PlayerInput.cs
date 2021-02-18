@@ -8,7 +8,7 @@ public class PlayerInput : MonoBehaviour
     public string moveXAxisName = "Horizontal";     // 좌우 회전을 위한 입력축 이름
     public string fireButtonName = "Fire1";         // 발사를 위한 입력 버튼 이름
     public string reloadButtonName = "Reload";      // 재장전을 위한 입력 버튼 이름
-    public string WalkButtonName = "Walk";          // 걷기를 위한 입력 버튼 이름
+    public string runButtonName = "Run";            // 걷기를 위한 입력 버튼 이름
     public string SitButtonName = "Sit";            // 앉기를 위한 입력 버튼 이름
     public string JumpButtonName = "Jump";          // 점프를 위한 입력 버튼 이름
     public string LockOnButtonName = "LockOn";      // 조준을 위한 입력 버튼 이름
@@ -18,9 +18,9 @@ public class PlayerInput : MonoBehaviour
     public float horizontal { get; private set; }  // 감지된 회전 입력값
     public bool fire { get; private set; }      // 감지된 발사 입력값
     public bool reload { get; private set; }    // 감지된 재장전 입력값
-    public bool move { get; private set; }    // 감지된 재장전 입력값
-    public bool move2 { get; private set; }    // 감지된 재장전 입력값
     public bool sitDown { get; private set; }    // 감지된 앉기 입력값
+    public bool run { get; private set; }    // 감지된 달리기 입력값
+    public bool moveForward { get; private set; }    // 감지된 달리기 입력값
 
     void Update()
     {
@@ -31,7 +31,6 @@ public class PlayerInput : MonoBehaviour
             horizontal = 0;
             fire = false;
             reload = false;
-            move2 = false;
             return;
         }
 
@@ -40,15 +39,13 @@ public class PlayerInput : MonoBehaviour
         // rotate에 관한 입력 감지
         horizontal = Input.GetAxis(moveXAxisName);
         // fire에 관한 입력 감지
-        fire = Input.GetButton(fireButtonName);
+        fire = Input.GetButton("Fire1");
         // reload에 관한 입력 감지
         reload = Input.GetButtonDown(reloadButtonName);
         // 앉기에 관한 입력 감지
         sitDown = Input.GetButton(SitButtonName);
-
-        if (Input.GetButtonDown(moveZAxisName) || Input.GetButtonDown(moveXAxisName))
-            move2 = true;
-        else
-            move2 = false;
+        // 달리기에 관한 입력 감지
+        run = Input.GetButton("Run");
+        moveForward = Input.GetButton("Vertical");
     }
 }
