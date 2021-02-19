@@ -5,11 +5,13 @@ using UnityEngine;
 // 사용자 입력에 따라 플레이어 캐릭터를 움직이는 스크립트
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 4f;
+    private float speed = 4f;
 
     private PlayerInput playerInput;    // 플레이어 입력을 알려주는 컴포넌트
-    private Rigidbody playeRigidbody;  // 플레이어 캐릭터의 리지드바디
+    private Rigidbody rigidbody;  // 플레이어 캐릭터의 리지드바디
     private Animator playerAnimator;    // 플레이어 캐릭터의 애니메이터
+    private int JumpPower = 6;
+    public bool isJumping = false;
 
     public Transform cameraArm;
 
@@ -17,12 +19,15 @@ public class PlayerMovement : MonoBehaviour
     {
         // 사용할 컨포넌트들의 참조 가져오기
         playerInput = GetComponent<PlayerInput>();
-        playeRigidbody = GetComponent<Rigidbody>();
+        rigidbody = GetComponent<Rigidbody>();
         playerAnimator = GetComponent<Animator>();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
+         // 점프
+        Jump();
+
         // 움직임 실행
         Move();
 
@@ -31,7 +36,12 @@ public class PlayerMovement : MonoBehaviour
         playerAnimator.SetFloat("Horizontal", playerInput.horizontal);
 
         // 앉기
-        playerAnimator.SetBool("SitDown", playerInput.sitDown);
+        playerAnimator.SetBool("SitDown", playerInput.sitDown);      
+    }
+
+    private void FixedUpdate()
+    {
+
     }
 
     private void Move()
@@ -69,17 +79,17 @@ public class PlayerMovement : MonoBehaviour
             speed = 4;
             playerAnimator.SetBool("Run", false);
 
-            if (Input.GetKey(KeyCode.W) && playerInput.run)
+            if (Input.GetKey(KeyCode.W) && playerInput.run && !isJumping)
             {
                 playerAnimator.SetBool("Run", true);
                 speed = 18;
                 moveDir = lookForward * moveInput.y;
-            }          
+            }
 
             if ((moveInput.y > 0f || moveInput.y < 0f) && (moveInput.x > 0f || moveInput.x < 0f))
-                playeRigidbody.MovePosition(playeRigidbody.position + moveDir * Time.deltaTime * speed / 1.4142135623f);
+                rigidbody.MovePosition(rigidbody.position + moveDir * Time.deltaTime * speed / 1.4142135623f);
             else
-                playeRigidbody.MovePosition(playeRigidbody.position + moveDir * Time.deltaTime * speed);
+                rigidbody.MovePosition(rigidbody.position + moveDir * Time.deltaTime * speed);
 
             //transform.position += moveDir * Time.deltaTime * 5f;
             //transform.forward = lookForward;
@@ -90,6 +100,32 @@ public class PlayerMovement : MonoBehaviour
         //    Vector3 moveDir = lookForward * moveInput.y;
 
         //    playeRigidbody.MovePosition(playeRigidbody.position + moveDir * Time.deltaTime * 8f);
-        //}
+        //}     
+    }
+
+    // 점프 구현
+    private void Jump()
+    {
+        if (!isJumping)
+        {
+            if (Input.GetButtonDown("Jump"))
+            {
+                isJumping = true;
+
+                // 점프
+                playerAnimator.SetTrigger("Jump");
+
+                rigidbody.AddForce(Vector3.up * JumpPower, ForceMode.Impulse);
+            }
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            //점프가 가능한 상태로 만듦
+            isJumping = false;
+        }
     }
 }

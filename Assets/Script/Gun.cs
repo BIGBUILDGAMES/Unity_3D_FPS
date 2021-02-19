@@ -33,7 +33,7 @@ public class Gun : MonoBehaviour
     public int magAmmo; // 현재 탄창에 남아 있는 탄알
 
     public float timeBetFire = 0.12f; // 탄알 발사 간격
-    public float reloadTime = 1.0f; // 재장전 소요 시간
+    private float reloadTime = 2.667f; // 재장전 소요 시간
     private float lastFireTime; // 총을 마지막으로 발사한 시점
 
     private void Awake()

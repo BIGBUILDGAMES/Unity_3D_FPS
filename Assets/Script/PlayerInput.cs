@@ -21,6 +21,7 @@ public class PlayerInput : MonoBehaviour
     public bool sitDown { get; private set; }    // 감지된 앉기 입력값
     public bool run { get; private set; }    // 감지된 달리기 입력값
     public bool moveForward { get; private set; }    // 감지된 달리기 입력값
+    public bool jump { get; private set; }    // 감지된 점프 입력값
 
     void Update()
     {
@@ -47,5 +48,7 @@ public class PlayerInput : MonoBehaviour
         // 달리기에 관한 입력 감지
         run = Input.GetButton("Run");
         moveForward = Input.GetButton("Vertical");
+        // 점프에 관한 입력 감지
+        jump = Input.GetButtonDown("Jump");
     }
 }

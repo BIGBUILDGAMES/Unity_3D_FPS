@@ -9,11 +9,13 @@ public class PlayerShooter : MonoBehaviour {
     public Transform rightHandMount; // 총의 오른쪽 손잡이, 오른손이 위치할 지점
 
     private PlayerInput playerInput; // 플레이어의 입력
+    private PlayerMovement playerMovement; // 플레이어의 입력
     private Animator playerAnimator; // 애니메이터 컴포넌트
 
     private void Start() {
         // 사용할 컴포넌트들을 가져오기
         playerInput = GetComponent<PlayerInput>();
+        playerMovement = GetComponent<PlayerMovement>();
         playerAnimator = GetComponent<Animator>();
     }
 
@@ -29,7 +31,7 @@ public class PlayerShooter : MonoBehaviour {
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.W) && playerInput.run)
+        if (Input.GetKey(KeyCode.W) && playerInput.run && !playerMovement.isJumping)    // 달리고 있을경우
         {
             playerAnimator.SetBool("Fire", false);
         }
