@@ -18,8 +18,10 @@ public class Enemy : LivingEntity {
     private Renderer enemyRenderer; // 렌더러 컴포넌트
 
     public float damage = 20f; // 공격력
-    public float timeBetAttack = 0.5f; // 공격 간격
-    private float lastAttackTime; // 마지막 공격 시점
+    public float timeBetAttack = 5f; // 공격 간격
+
+    private bool isCatch;
+    private bool isAttack;
 
     // 추적할 대상이 존재하는지 알려주는 프로퍼티
     private bool hasTarget
@@ -50,7 +52,7 @@ public class Enemy : LivingEntity {
     }
 
     // 적 AI의 초기 스펙을 결정하는 셋업 메서드
-    public void Setup(float newHealth, float newDamage, float newSpeed)
+    public void Setup(float newHealth, float newDamage, float newSpeed/*, Color skinColor*/)
     {
         // 체력 설정
         startingHealth = health = newHealth;
@@ -59,18 +61,27 @@ public class Enemy : LivingEntity {
         // 내비메시 에이전트의 이동 속도 설정
         pathFinder.speed = newSpeed;
         // 렌더러가 사용 중인 머티리얼의 컬러를 변경, 외형 색이 변함
-
+        // enemyRenderer.material.color = skinColor;
     }
 
     private void Start() {
         // 게임 오브젝트 활성화와 동시에 AI의 추적 루틴 시작
         StartCoroutine(UpdatePath());
+        isCatch = false;
+        isAttack = false;
     }
 
     private void Update()
     {
+        if (!isCatch)
         // 추적 대상의 존재 여부에 따라 다른 애니메이션을 재생
-        enemyAnimator.SetBool("HasTarget", hasTarget);
+        {
+            enemyAnimator.SetBool("HasTarget", true);           
+        }
+        else
+        {
+            enemyAnimator.SetBool("HasTarget", false);            
+        }
     }
 
     // 주기적으로 추적할 대상의 위치를 찾아 경로를 갱신
@@ -93,7 +104,7 @@ public class Enemy : LivingEntity {
                 // 20유닛의 반지름을 가진 가상의 구를 그렸을 때 구와 겹치는 모든 콜라이더를 가져옴
                 // 단, whatIsTarget 레이어를 가진 콜라이더만 가져오도록 필터링
                 Collider[] colliders =
-                    Physics.OverlapSphere(transform.position, 20f, whatIsTarget);
+                    Physics.OverlapSphere(transform.position, 200f, whatIsTarget);
 
                 // 모든 콜라이더를 순회하면서 살아 있는 LivingEntity 찾기
                 for (int i = 0; i < colliders.Length; i++)
@@ -142,7 +153,7 @@ public class Enemy : LivingEntity {
         base.Die();
 
         // 다른 AI를 방해하지 않도록 자신의 모든 콜라이더를 비활성화
-        Collider[] enemyColliders = GetComponent<Collider[]>();
+        Collider[] enemyColliders = GetComponents<Collider>();
         for (int i = 0; i < enemyColliders.Length; i++)
         {
             enemyColliders[i].enabled = false;
@@ -155,14 +166,13 @@ public class Enemy : LivingEntity {
         // 사망 애니메이션 재생
         enemyAnimator.SetTrigger("Die");
         // 사망 효과음 재생
-        enemyAudioPlayer.PlayOneShot(deathSound);
+        //enemyAudioPlayer.PlayOneShot(deathSound);
     }
 
     private void OnTriggerStay(Collider other) 
-    {
+    {       
         // 자신이 사망하지 않았으며
-        // 최근 공격 시점에서 timeBetAttck 이상 시간이 지났다면 공격 가능
-        if (!dead && Time.time >= lastAttackTime + timeBetAttack)
+        if (!dead)
         {
             // 상대방의 LivingEntity 타입 가져오기 시도
             LivingEntity attackTarget = other.GetComponent<LivingEntity>();
@@ -170,17 +180,44 @@ public class Enemy : LivingEntity {
             // 상대방의 LivingEntity가 자신의 추적 대상이라면 공격 실행
             if (attackTarget != null && attackTarget == targetEntity)
             {
-                // 최근 공격 시간 갱신
-                lastAttackTime = Time.time;
+                isCatch = true;
+                enemyAnimator.SetTrigger("Attack");
+                pathFinder.isStopped = true;
+
                 // 상대방의 피격 위치와 피격 방향을 근삿값으로 계산
                 Vector3 hitPoint = other.ClosestPoint(transform.position);
                 Vector3 hitNormal = transform.position - other.transform.position;
 
-                // 공격 실행
-                attackTarget.OnDamage(damage, hitPoint, hitNormal);
+                if (isAttack)
+                {
+                    // 공격 실행
+                    attackTarget.OnDamage(damage, hitPoint, hitNormal);
+                    isAttack = false;
+                }
             }
         }
+    }
 
-        // 트리거 충돌한 상대방 게임 오브젝트가 추적 대상이라면 공격 실행   
+    private void OnTriggerExit(Collider other)
+    {
+        // 자신이 사망하지 않았으며
+        if (!dead)
+        {
+            // 상대방의 LivingEntity 타입 가져오기 시도
+            LivingEntity attackTarget = other.GetComponent<LivingEntity>();
+
+            // 상대방의 LivingEntity가 자신의 추적 대상이라면 공격 실행
+            if (attackTarget != null && attackTarget == targetEntity)
+            {
+                isCatch = false;
+                pathFinder.isStopped = false;
+            }
+        }
+    }
+
+    public void Attack()
+    {
+        isAttack = true;
     }
 }
+

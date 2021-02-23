@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class SpineRotate : MonoBehaviour
 {
-    public float speed = 120;
+    private float speed = 200;
     public Transform spineTrans;
     public Transform gunTrans;
+    public Transform handTrans;
+
+    private Vector3 gunVec;
 
     float mouseX; // 마우스 X각도
     float mouseZ; // 마우스 X각도
@@ -21,7 +24,7 @@ public class SpineRotate : MonoBehaviour
         float vertical = Input.GetAxis("Mouse Y"); // 마우스의 Y축 움직임을 감지
 
         mouseX += horizontal * speed * Time.deltaTime; // 마우스 X각도를 누적해준다.
-        mouseZ += vertical * speed * Time.deltaTime; // 마우스 Y각도를 누적해준다.
+        mouseZ -= vertical * speed * Time.deltaTime; // 마우스 Y각도를 누적해준다.
 
         //if (mouseZ >= 90)   // mouseY가 90도 이상이면
         //{

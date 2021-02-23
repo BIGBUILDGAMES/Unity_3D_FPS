@@ -1,9 +1,18 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+enum KIND
+{
+    SPHERE,
+    GUN,
+    EnemyKind_END
+}
+
 // 적 게임 오브젝트를 주기적으로 생성
 public class EnemySpawner : MonoBehaviour {
-    public Enemy enemyPrefab; // 생성할 적 AI
+    public Enemy sphereEnemy; // 생성할 적 AI
+    public Enemy gunEnemy; // 생성할 적 AI
+    private Enemy enemy;
 
     public Transform[] spawnPoints; // 적 AI를 소환할 위치들
 
@@ -20,6 +29,8 @@ public class EnemySpawner : MonoBehaviour {
 
     private List<Enemy> enemies = new List<Enemy>(); // 생성된 적들을 담는 리스트
     private int wave; // 현재 웨이브
+    private int spawnCount = 8;
+    private int spawnCount2 = 0;
 
     private void Update() {
         // 게임 오버 상태일때는 생성하지 않음
@@ -51,7 +62,7 @@ public class EnemySpawner : MonoBehaviour {
         wave++;
 
         // 현재 웨이브 * 1.5를 반올림한 수만큼 적 생성
-        int spawnCount = Mathf.RoundToInt(wave * 1.5f);
+        //int spawnCount = Mathf.RoundToInt(wave * 1.5f);
 
         // spawnCount만큼 적 생성
         for (int i = 0; i < spawnCount; i++)
@@ -59,22 +70,44 @@ public class EnemySpawner : MonoBehaviour {
             // 적의 세기를 0%에서 100% 사이에서 랜덤 결정
             float enemyIntensity = Random.Range(0f, 1f);
             // 적 생성 처리 실행
-            CreateEnemy(enemyIntensity);
+            CreateEnemy(enemyIntensity, KIND.SPHERE);
         }
+
+        for (int i = 0; i < spawnCount2; i++)
+        {
+            // 적의 세기를 0%에서 100% 사이에서 랜덤 결정
+            float enemyIntensity = Random.Range(0f, 1f);
+            // 적 생성 처리 실행
+            CreateEnemy(enemyIntensity, KIND.GUN);
+        }
+
+        spawnCount += 2;
+        spawnCount2 += 2;
     }
 
     // 적을 생성하고 생성한 적에게 추적할 대상을 할당
-    private void CreateEnemy(float intensity)
+    private void CreateEnemy(float intensity, KIND enemyKind)
     {
         // intensity를 기반으로 적의 능력치 결정
         float health = Mathf.Lerp(healthMin, healthMax, intensity);
         float damage = Mathf.Lerp(damageMin, damageMax, intensity);
         float speed = Mathf.Lerp(speedMin, speedMax, intensity);
 
+        // intensity를 기반으로 하얀색 enemyStrength 사이에서 적의 피부색 결정
+        // Color skinColor = Color.Lerp(Color.white, strongEnemyColor, intensity);
+
         // 생성할 위치를 랜덤으로 결정
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
+
         // 적 프리팹으로부터 적 생성
-        Enemy enemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
+        if (enemyKind == KIND.SPHERE)
+        {
+            enemy = Instantiate(sphereEnemy, spawnPoint.position, spawnPoint.rotation);
+        }
+        else if (enemyKind == KIND.GUN)
+        {
+            enemy = Instantiate(gunEnemy, spawnPoint.position, spawnPoint.rotation);
+        }
 
         // 생성한 적의 능력치와 추적 대상 설정
         enemy.Setup(health, damage, speed);

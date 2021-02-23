@@ -24,11 +24,12 @@ public class Gun : MonoBehaviour
     private AudioSource gunAudioPlayer; // 총 소리 재생기
     public AudioClip shotClip; // 발사 소리
     public AudioClip reloadClip; // 재장전 소리
+    public AudioClip reloadVoiceClip; // 재장전 소리
 
-    public float damege = 25; // 공격력
-    private float fireDistance = 50f; // 사정거리
+    private float damege = 25; // 공격력
+    private float fireDistance = 5000f; // 사정거리
 
-    public int ammoRemain = 100; // 남은 전체 탄알
+    public int ammoRemain = 1000; // 남은 전체 탄알
     public int magCapacity = 25; // 탄창 용량
     public int magAmmo; // 현재 탄창에 남아 있는 탄알
 
@@ -40,12 +41,12 @@ public class Gun : MonoBehaviour
     {
         // 사용할 컴포넌트의 참조 가져오기
         gunAudioPlayer = GetComponent<AudioSource>();
-        bulletLineRenderer = GetComponent<LineRenderer>();
+        //bulletLineRenderer = GetComponent<LineRenderer>();
 
-        // 사용할 점을 두 개로 변경
-        bulletLineRenderer.positionCount = 2;
-        // 라인 렌더러를 비활성화
-        bulletLineRenderer.enabled = false;
+        //// 사용할 점을 두 개로 변경
+        //bulletLineRenderer.positionCount = 2;
+        //// 라인 렌더러를 비활성화
+        //bulletLineRenderer.enabled = false;
     }
 
     private void OnEnable()
@@ -129,20 +130,20 @@ public class Gun : MonoBehaviour
         // 총격 소리 재생
         gunAudioPlayer.PlayOneShot(shotClip);
 
-        // 선의 시작점은 총구의 위치
-        bulletLineRenderer.SetPosition(0, fireTransform.position);
+        //// 선의 시작점은 총구의 위치
+        //bulletLineRenderer.SetPosition(0, fireTransform.position);
 
-        // 선의 끝점은 입력으로 들어온 충돌 위치
-        bulletLineRenderer.SetPosition(1, hitPosition);
+        //// 선의 끝점은 입력으로 들어온 충돌 위치
+        //bulletLineRenderer.SetPosition(1, hitPosition);
 
-        // 라인 렌더러를 활성화하여 탄알 궤적을 그림
-        bulletLineRenderer.enabled = true;
+        //// 라인 렌더러를 활성화하여 탄알 궤적을 그림
+        //bulletLineRenderer.enabled = true;
 
         // 0.03초 동안 잠시 처리를 대기
         yield return new WaitForSeconds(0.03f);
 
-        // 라인 렌더러를 비활성화하여 탄알 궤적을 지움
-        bulletLineRenderer.enabled = false;
+        //// 라인 렌더러를 비활성화하여 탄알 궤적을 지움
+        //bulletLineRenderer.enabled = false;
     }
 
     // 재장전 시도
@@ -164,9 +165,7 @@ public class Gun : MonoBehaviour
     private IEnumerator ReloadRoutine()
     {
         // 현재 상태를 재장전 중 실제로 전화
-        state = State.Reloading;
-        // 재장전 소리 재생
-        gunAudioPlayer.PlayOneShot(reloadClip);
+        state = State.Reloading; 
 
         // 재장전 소요 시간만큼 처리 쉬기
         yield return new WaitForSeconds(reloadTime);

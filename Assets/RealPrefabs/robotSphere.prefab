@@ -3638,10 +3638,10 @@ GameObject:
   - component: {fileID: 2100140044406037454}
   - component: {fileID: 2071485004806785222}
   - component: {fileID: 2051435148389532292}
-  - component: {fileID: 2101646323897455209}
   - component: {fileID: 2101646323897455210}
   - component: {fileID: 2101646323897455211}
   - component: {fileID: 2101646323897455208}
+  - component: {fileID: -518662558900965717}
   m_Layer: 0
   m_Name: robotSphere
   m_TagString: Untagged
@@ -3696,22 +3696,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!54 &2101646323897455209
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2103148831429424694}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 20
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
 --- !u!136 &2101646323897455210
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -3767,8 +3751,21 @@ MonoBehaviour:
   hitEffect: {fileID: 0}
   deathSound: {fileID: 0}
   hitSound: {fileID: 0}
-  damage: 20
-  timeBetAttack: 0.5
+  damage: 0
+  timeBetAttack: 2
+--- !u!65 &-518662558900965717
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2103148831429424694}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 0.1, z: 0.1}
+  m_Center: {x: 0, y: 0.05, z: 0.1}
 --- !u!1 &2103151163600431648
 GameObject:
   m_ObjectHideFlags: 0

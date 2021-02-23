@@ -12,11 +12,17 @@ public class PlayerShooter : MonoBehaviour {
     private PlayerMovement playerMovement; // 플레이어의 입력
     private Animator playerAnimator; // 애니메이터 컴포넌트
 
-    private void Start() {
+    private AudioSource gunAudioPlayer; // 총 소리 재생기
+    public AudioClip reloadClip; // 재장전 소리
+    public AudioClip reloadVoiceClip; // 재장전 소리
+
+    private void Start() 
+    {
         // 사용할 컴포넌트들을 가져오기
         playerInput = GetComponent<PlayerInput>();
         playerMovement = GetComponent<PlayerMovement>();
         playerAnimator = GetComponent<Animator>();
+        gunAudioPlayer = GetComponent<AudioSource>();
     }
 
     private void OnEnable() {
@@ -43,7 +49,7 @@ public class PlayerShooter : MonoBehaviour {
                 playerAnimator.SetBool("Fire", playerInput.fire);
 
                 // 입력을 감지하고 총 발사
-                if (playerInput.fire)
+                if (playerInput.fire && !playerInput.reload)
                 {
                     // 발사 입력 감지 시 총 발사
                     gun.Fire();
@@ -54,13 +60,16 @@ public class PlayerShooter : MonoBehaviour {
                 playerAnimator.SetBool("Fire", false);
             }
 
-            if (playerInput.reload)
+            if (!playerInput.fire && playerInput.reload)
             {
                 // 재장전 입력 감지 시 재장전
                 if (gun.Reload())
                 {
+                    Debug.Log("reload");
+
                     // 재장전 성공 시에만 재장전 애니메이션 재생
                     playerAnimator.SetTrigger("Reload");
+                    gunAudioPlayer.PlayOneShot(reloadVoiceClip);
                 }
             }
         }  
@@ -78,24 +87,29 @@ public class PlayerShooter : MonoBehaviour {
         }
     }
 
-    // 애니메이터의 IK 갱신
-    private void OnAnimatorIK(int layerIndex) 
+    private void ReloadingSFX()
     {
-        // 총의 기준점 gunPivot을 3D 모델의 오른쪽으로 팔꿈치 위치로 이동
-        gunPivot.position = playerAnimator.GetIKHintPosition(AvatarIKHint.RightElbow);
-
-        // IK를 사용하여 왼손의 위치와 회전을 총의 왼쪽 손잡이에 맞춤
-        playerAnimator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1.0f);
-        playerAnimator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1.0f);
-
-        playerAnimator.SetIKPosition(AvatarIKGoal.LeftHand, leftHandMount.position);
-        playerAnimator.SetIKRotation(AvatarIKGoal.LeftHand, leftHandMount.rotation);
-        
-        // IK를 사용하여 오른손의 위치와 회전을 총의 오른쪽 손잡이에 맞춤
-        playerAnimator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1.0f);
-        playerAnimator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1.0f);
-
-        playerAnimator.SetIKPosition(AvatarIKGoal.RightHand, leftHandMount.position);
-        playerAnimator.SetIKRotation(AvatarIKGoal.RightHand, leftHandMount.rotation);
+        gunAudioPlayer.PlayOneShot(reloadClip);
     }
+
+    // 애니메이터의 IK 갱신
+    //private void OnAnimatorIK(int layerIndex) 
+    //{
+    //    // 총의 기준점 gunPivot을 3D 모델의 오른쪽으로 팔꿈치 위치로 이동
+    //    gunPivot.position = playerAnimator.GetIKHintPosition(AvatarIKHint.RightElbow);
+
+    //    // IK를 사용하여 왼손의 위치와 회전을 총의 왼쪽 손잡이에 맞춤
+    //    playerAnimator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1.0f);
+    //    playerAnimator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1.0f);
+
+    //    playerAnimator.SetIKPosition(AvatarIKGoal.LeftHand, leftHandMount.position);
+    //    playerAnimator.SetIKRotation(AvatarIKGoal.LeftHand, leftHandMount.rotation);
+
+    //    // IK를 사용하여 오른손의 위치와 회전을 총의 오른쪽 손잡이에 맞춤
+    //    playerAnimator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1.0f);
+    //    playerAnimator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1.0f);
+
+    //    playerAnimator.SetIKPosition(AvatarIKGoal.RightHand, leftHandMount.position);
+    //    playerAnimator.SetIKRotation(AvatarIKGoal.RightHand, leftHandMount.rotation);
+    //}
 }
