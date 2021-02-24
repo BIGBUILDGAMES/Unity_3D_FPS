@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraRotate : MonoBehaviour
 {
-    private float rotateSpeed = 200;
+    private float rotateSpeed = 300;
 
     float mouseX; // 마우스 X각도
     float mouseZ; // 마우스 X각도

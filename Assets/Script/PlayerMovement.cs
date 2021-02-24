@@ -13,7 +13,14 @@ public class PlayerMovement : MonoBehaviour
     private int JumpPower = 6;
     public bool isJumping = false;
 
+    public AudioClip stepClip; // 걸음 소리
+    public AudioClip jumpLeap; // 걸음 소리
+    public AudioClip jumpDown; // 걸음 소리
     public Transform cameraArm;
+    private AudioSource audioPlayer; // 총 소리 재생기
+
+    private bool state;
+    private bool state2;
 
     void Start()
     {
@@ -21,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         rigidbody = GetComponent<Rigidbody>();
         playerAnimator = GetComponent<Animator>();
+        audioPlayer = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -36,7 +44,9 @@ public class PlayerMovement : MonoBehaviour
         playerAnimator.SetFloat("Horizontal", playerInput.horizontal);
 
         // 앉기
-        playerAnimator.SetBool("SitDown", playerInput.sitDown);      
+        playerAnimator.SetBool("SitDown", playerInput.sitDown);
+
+        state2 = playerInput.run;
     }
 
     private void FixedUpdate()
@@ -82,14 +92,20 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.W) && playerInput.run && !isJumping)
             {
                 playerAnimator.SetBool("Run", true);
-                speed = 18;
+                speed = 18;                
                 moveDir = lookForward * moveInput.y;
             }
 
             if ((moveInput.y > 0f || moveInput.y < 0f) && (moveInput.x > 0f || moveInput.x < 0f))
+            {
                 rigidbody.MovePosition(rigidbody.position + moveDir * Time.deltaTime * speed / 1.4142135623f);
+                state = false;
+            }
             else
+            {
                 rigidbody.MovePosition(rigidbody.position + moveDir * Time.deltaTime * speed);
+                state = true;
+            }
 
             //transform.position += moveDir * Time.deltaTime * 5f;
             //transform.forward = lookForward;
@@ -127,5 +143,34 @@ public class PlayerMovement : MonoBehaviour
             //점프가 가능한 상태로 만듦
             isJumping = false;
         }
+    }
+
+    private void StepSFX()
+    {
+        if (!state2)
+        audioPlayer.PlayOneShot(stepClip);       
+    }
+
+    private void Step3SFX()
+    {
+        audioPlayer.PlayOneShot(stepClip);
+    }
+
+    private void Step2SFX()
+    {
+        if (state)
+        audioPlayer.PlayOneShot(stepClip);
+    }
+
+    private void JumpLeapSFX()
+    {
+        if (state)
+            audioPlayer.PlayOneShot(stepClip);
+    }
+
+    private void JumpDownSFX()
+    {
+        if (state)
+            audioPlayer.PlayOneShot(stepClip);
     }
 }

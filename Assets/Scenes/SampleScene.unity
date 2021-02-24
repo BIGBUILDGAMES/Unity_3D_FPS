@@ -1616,8 +1616,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf60ce9abab742a98a648d974181076, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 2101646323897455208, guid: e879c55e6b5110342a97004964aa1340,
+  sphereEnemy: {fileID: 2101646323897455208, guid: e879c55e6b5110342a97004964aa1340,
     type: 3}
+  gunEnemy: {fileID: 822637424171728333, guid: e5cc69520496a784581105aecf29b48f, type: 3}
   spawnPoints:
   - {fileID: 2037365186}
   - {fileID: 735043843}
@@ -2024,6 +2025,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2836004475591695743, guid: f432554f564e69242897607d34218939,
         type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836004475591695743, guid: f432554f564e69242897607d34218939,
+        type: 3}
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
@@ -2372,6 +2378,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isJumping: 0
+  stepClip: {fileID: 8300000, guid: 5f1f0d882d9c4d64abba5eb6615e5df7, type: 3}
+  jumpLeap: {fileID: 0}
+  jumpDown: {fileID: 0}
   cameraArm: {fileID: 1580494278}
 --- !u!114 &1979740735
 MonoBehaviour:

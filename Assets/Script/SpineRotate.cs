@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpineRotate : MonoBehaviour
 {
-    private float speed = 200;
+    private float speed = 300;
     public Transform spineTrans;
     public Transform gunTrans;
     public Transform handTrans;

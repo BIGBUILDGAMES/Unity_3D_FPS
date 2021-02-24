@@ -22,6 +22,7 @@ public class Enemy : LivingEntity {
 
     private bool isCatch;
     private bool isAttack;
+    private int enemyKind;
 
     // 추적할 대상이 존재하는지 알려주는 프로퍼티
     private bool hasTarget
@@ -52,7 +53,7 @@ public class Enemy : LivingEntity {
     }
 
     // 적 AI의 초기 스펙을 결정하는 셋업 메서드
-    public void Setup(float newHealth, float newDamage, float newSpeed/*, Color skinColor*/)
+    public void Setup(float newHealth, float newDamage, float newSpeed, int kind)
     {
         // 체력 설정
         startingHealth = health = newHealth;
@@ -62,6 +63,7 @@ public class Enemy : LivingEntity {
         pathFinder.speed = newSpeed;
         // 렌더러가 사용 중인 머티리얼의 컬러를 변경, 외형 색이 변함
         // enemyRenderer.material.color = skinColor;
+        enemyKind = kind;
     }
 
     private void Start() {
@@ -131,16 +133,16 @@ public class Enemy : LivingEntity {
     public override void OnDamage(float damage, Vector3 hitPoint, Vector3 hitNormal) 
     {
         // 아직 사망하지 않은 경우에만 피격 효과 재생
-        if (!dead)
-        {
-            // 공격받은 지점과 방향으로 파티클 효과 재생
-            hitEffect.transform.position = hitPoint;
-            hitEffect.transform.rotation = Quaternion.LookRotation(hitNormal);
-            hitEffect.Play();
+        //if (!dead)
+        //{
+        //    // 공격받은 지점과 방향으로 파티클 효과 재생
+        //    hitEffect.transform.position = hitPoint;
+        //    hitEffect.transform.rotation = Quaternion.LookRotation(hitNormal);
+        //    hitEffect.Play();
 
-            // 피격 효과음 재생
-            enemyAudioPlayer.PlayOneShot(hitSound);
-        }
+        //    // 피격 효과음 재생
+        //    enemyAudioPlayer.PlayOneShot(hitSound);
+        //}
 
         // LivingEntity의 OnDamage()를 실행하여 데미지 적용
         base.OnDamage(damage, hitPoint, hitNormal);
