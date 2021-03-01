@@ -327,7 +327,7 @@ GameObject:
   - component: {fileID: 2216647860041141508}
   m_Layer: 0
   m_Name: mech
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -402,6 +402,7 @@ MonoBehaviour:
   hitSound: {fileID: 0}
   damage: 20
   timeBetAttack: 5
+  eye: {fileID: 0}
 --- !u!195 &2216647860041141508
 NavMeshAgent:
   m_ObjectHideFlags: 0

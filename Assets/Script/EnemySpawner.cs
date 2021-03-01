@@ -22,7 +22,7 @@ public class EnemySpawner : MonoBehaviour {
 
     private List<Enemy> enemies = new List<Enemy>(); // 생성된 적들을 담는 리스트
     private int wave; // 현재 웨이브
-    private int spawnCount = 8;
+    private int spawnCount = 1;
     private int spawnCount2 = 0;
 
     private void Update() {
@@ -63,7 +63,7 @@ public class EnemySpawner : MonoBehaviour {
             // 적의 세기를 0%에서 100% 사이에서 랜덤 결정
             float enemyIntensity = Random.Range(0f, 1f);
             // 적 생성 처리 실행
-            CreateEnemy(enemyIntensity, gunEnemy);
+            CreateEnemy(enemyIntensity, sphereEnemy);
         }
 
         for (int i = 0; i < spawnCount2; i++)
