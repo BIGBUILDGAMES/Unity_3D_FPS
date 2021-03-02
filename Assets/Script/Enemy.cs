@@ -8,7 +8,8 @@ public class Enemy : LivingEntity {
     private Collider plCollider; // 플레이어 콜라이더
     private Transform plTransform; // 플레이어 트랜스폼
 
-    private LivingEntity targetEntity; // 추적할 대상
+    private LivingEntity nexusEntity; // 추적할 대상
+    private LivingEntity playerEntity; // 추적할 대상
     private NavMeshAgent pathFinder; // 경로계산 AI 에이전트
 
     public ParticleSystem hitEffect; // 피격시 재생할 파티클 효과
@@ -20,6 +21,7 @@ public class Enemy : LivingEntity {
     private Renderer enemyRenderer; // 렌더러 컴포넌트
 
     private float Distance = 20f;
+    private float revengeTime = 0f;
 
     public float damage = 20f; // 공격력
     public float timeBetAttack = 5f; // 공격 간격
@@ -27,6 +29,7 @@ public class Enemy : LivingEntity {
     private bool isCatch;
     private bool isAttack;
     private bool findPlayer;
+    private bool revenge;
     private int enemyKind;
 
     private Plane[] frustum;
@@ -34,24 +37,25 @@ public class Enemy : LivingEntity {
     public Camera eye;
     private bool isVisible;
     private GameObject player;
+    private GameObject nexus;
 
     private LineRenderer bulletLineRenderer; // 탄알 궤적을 그리기 위한 렌더러
 
     // 추적할 대상이 존재하는지 알려주는 프로퍼티
-    private bool hasTarget
-    {
-        get
-        {
-            // 추적할 대상이 존재하고, 대상이 사망하지 않았다면 true
-            if (targetEntity != null && !targetEntity.dead)
-            {
-                return true;
-            }
+    //private bool hasTarget
+    //{
+    //    get
+    //    {
+    //        // 추적할 대상이 존재하고, 대상이 사망하지 않았다면 true
+    //        if (targetEntity != null && !targetEntity.dead)
+    //        {
+    //            return true;
+    //        }
 
-            // 그렇지 않다면 false
-            return false;
-        }
-    }
+    //        // 그렇지 않다면 false
+    //        return false;
+    //    }
+    //}
 
     private void Awake()
     {
@@ -70,9 +74,13 @@ public class Enemy : LivingEntity {
         // 라인 렌더러를 비활성화
         bulletLineRenderer.enabled = false;
 
+        nexus = GameObject.Find("Nexus");
+        nexusEntity = nexus.GetComponent<LivingEntity>();
+
         player = GameObject.Find("Player");
         plCollider = player.GetComponent<Collider>();
         plTransform = player.GetComponent<Transform>();
+        playerEntity = player.GetComponent<LivingEntity>();
     }
 
     // 적 AI의 초기 스펙을 결정하는 셋업 메서드
@@ -91,82 +99,103 @@ public class Enemy : LivingEntity {
 
     private void Start() {
         // 게임 오브젝트 활성화와 동시에 AI의 추적 루틴 시작
-        StartCoroutine(UpdatePath());
+        //StartCoroutine(UpdatePath());
         isCatch = false;
         isAttack = false;
     }
 
     private void Update()
     {
-        if (!isCatch)
-        // 추적 대상의 존재 여부에 따라 다른 애니메이션을 재생
+        if (!dead)
         {
-            enemyAnimator.SetBool("HasTarget", true);           
-        }
-        else
-        {
-            enemyAnimator.SetBool("HasTarget", false);            
-        }
+            if (!isCatch)
+            // 추적 대상의 존재 여부에 따라 다른 애니메이션을 재생
+            {
+                enemyAnimator.SetBool("HasTarget", true);
+            }
+            else
+            {
+                enemyAnimator.SetBool("HasTarget", false);
+            }
 
-        // 시야 절두체
-        frustum = GeometryUtility.CalculateFrustumPlanes(eye);
-        plBounds = plCollider.bounds;
-        isVisible = GeometryUtility.TestPlanesAABB(frustum, plBounds);
-        if (isVisible)
-        {
-            FindPlayer();
-        }
-        else
-        {
-            findPlayer = false;
+            // 시야 절두체
+            frustum = GeometryUtility.CalculateFrustumPlanes(eye);
+            plBounds = plCollider.bounds;
+            isVisible = GeometryUtility.TestPlanesAABB(frustum, plBounds);
+            if (isVisible)
+            {
+                FindPlayer();
+            }
+            else
+            {
+                findPlayer = false;
+            }
+
+            if (findPlayer || revenge)
+                pathFinder.SetDestination(player.transform.position);
+            else
+                pathFinder.SetDestination(nexus.transform.position);
+
+            if (revenge)
+            {
+                revengeTime += Time.deltaTime;
+                if (revengeTime >= 3.0f)
+                {
+                    revenge = false;
+                }
+            }
+            else
+            {
+                revengeTime = 0.0f;
+            }
         }
     }
 
     // 주기적으로 추적할 대상의 위치를 찾아 경로를 갱신
-    private IEnumerator UpdatePath() 
-    {
-        // 살아있는 동안 무한 루프
-        while (!dead)
-        {
-            if (findPlayer)
-            {
-                if (hasTarget)
-                {
-                    // 추적 대상 존재 : 경로를 갱신하고 AI 이동을 계속 진행
-                    pathFinder.isStopped = false;
-                    pathFinder.SetDestination(targetEntity.transform.position);
-                }
-                else
-                {
-                    // 추적 대상 없음: AI 이동 중지
-                    pathFinder.isStopped = true;
+    //private IEnumerator UpdatePath()
+    //{
+    //    // 살아있는 동안 무한 루프
+    //    while (!dead)
+    //    {
+    //        if (findPlayer)
+    //        {
+    //            if (hasTarget)
+    //            {
+    //                // 추적 대상 존재 : 경로를 갱신하고 AI 이동을 계속 진행
+    //                pathFinder.isStopped = false;
+    //                pathFinder.SetDestination(targetEntity.transform.position);
+    //            }
+    //            else
+    //            {
+    //                // 추적 대상 없음: AI 이동 중지
+    //                pathFinder.isStopped = true;
 
-                    // 20유닛의 반지름을 가진 가상의 구를 그렸을 때 구와 겹치는 모든 콜라이더를 가져옴
-                    // 단, whatIsTarget 레이어를 가진 콜라이더만 가져오도록 필터링
-                    Collider[] colliders =
-                        Physics.OverlapSphere(transform.position, 200f, whatIsTarget);
+    //                // 20유닛의 반지름을 가진 가상의 구를 그렸을 때 구와 겹치는 모든 콜라이더를 가져옴
+    //                // 단, whatIsTarget 레이어를 가진 콜라이더만 가져오도록 필터링
+    //                Collider[] colliders =
+    //                    Physics.OverlapSphere(transform.position, 200f, whatIsTarget);
 
-                    // 모든 콜라이더를 순회하면서 살아 있는 LivingEntity 찾기
-                    for (int i = 0; i < colliders.Length; i++)
-                    {
-                        // 콜라이더로부터 LivingEntity 컴포넌트 가져오기
-                        LivingEntity livingEntity = colliders[i].GetComponent<LivingEntity>();
-                        // LivingEntity 컴포넌트가 존재하며, 해당 LivingEntity가 살아 있다면
-                        if (livingEntity != null && !livingEntity.dead)
-                        {
-                            // 추적 대상을 해당 LivingEntity로 설정
-                            targetEntity = livingEntity;
+    //                // 모든 콜라이더를 순회하면서 살아 있는 LivingEntity 찾기
+    //                for (int i = 0; i < colliders.Length; i++)
+    //                {
+    //                    // 콜라이더로부터 LivingEntity 컴포넌트 가져오기
+    //                    LivingEntity livingEntity = colliders[i].GetComponent<LivingEntity>();
+    //                    // LivingEntity 컴포넌트가 존재하며, 해당 LivingEntity가 살아 있다면
+    //                    if (livingEntity != null && !livingEntity.dead)
+    //                    {
+    //                        // 추적 대상을 해당 LivingEntity로 설정
+    //                        targetEntity = livingEntity;
 
-                            // for 문 루프 즉시 정지
-                            break;
-                        }
-                    }
-                }
-            }
-            // 0.25초 주기로 처리 반복
-            yield return new WaitForSeconds(0.25f);
-        }
-    }
+    //                        // for 문 루프 즉시 정지
+    //                        break;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        // 0.25초 주기로 처리 반복
+    //        yield return new WaitForSeconds(0.25f);
+    //    }
+    //}
 
     // 데미지를 입었을때 실행할 처리
     public override void OnDamage(float damage, Vector3 hitPoint, Vector3 hitNormal) 
@@ -185,6 +214,8 @@ public class Enemy : LivingEntity {
 
         // LivingEntity의 OnDamage()를 실행하여 데미지 적용
         base.OnDamage(damage, hitPoint, hitNormal);
+        revenge = true;
+        Debug.Log("hit");
     }
 
     // 사망 처리
@@ -193,12 +224,12 @@ public class Enemy : LivingEntity {
         // LivingEntity의 Die()를 실행하여 기본 사망 처리 실행
         base.Die();
 
-        // 다른 AI를 방해하지 않도록 자신의 모든 콜라이더를 비활성화
-        Collider[] enemyColliders = GetComponents<Collider>();
-        for (int i = 0; i < enemyColliders.Length; i++)
-        {
-            enemyColliders[i].enabled = false;
-        }
+        //// 다른 AI를 방해하지 않도록 자신의 모든 콜라이더를 비활성화
+        //Collider[] enemyColliders = GetComponents<Collider>();
+        //for (int i = 0; i < enemyColliders.Length; i++)
+        //{
+        //    enemyColliders[i].enabled = false;
+        //}
 
         // AI 추적을 중지하고 내비메시 컴포넌트 비활성화
         pathFinder.isStopped = true;
@@ -211,17 +242,18 @@ public class Enemy : LivingEntity {
     }
 
     private void OnTriggerStay(Collider other) 
-    {       
+    {
         // 자신이 사망하지 않았으며
         if (!dead)
         {
-            if (findPlayer)
+            if ((!findPlayer && !revenge) || findPlayer)
             {
                 // 상대방의 LivingEntity 타입 가져오기 시도
                 LivingEntity attackTarget = other.GetComponent<LivingEntity>();
 
                 // 상대방의 LivingEntity가 자신의 추적 대상이라면 공격 실행
-                if (attackTarget != null && attackTarget == targetEntity)
+                if (attackTarget != null &&
+                    (attackTarget == nexusEntity || attackTarget == playerEntity))
                 {
                     isCatch = true;
                     enemyAnimator.SetTrigger("Attack");
@@ -239,6 +271,11 @@ public class Enemy : LivingEntity {
                     }
                 }
             }
+            else
+            {
+                pathFinder.isStopped = false;
+                Debug.Log("sfdfsdfdff");
+            }
         }
     }
 
@@ -250,8 +287,8 @@ public class Enemy : LivingEntity {
             // 상대방의 LivingEntity 타입 가져오기 시도
             LivingEntity attackTarget = other.GetComponent<LivingEntity>();
 
-            // 상대방의 LivingEntity가 자신의 추적 대상이라면 공격 실행
-            if (attackTarget != null && attackTarget == targetEntity)
+            if (attackTarget != null &&
+                    (attackTarget == nexusEntity || attackTarget == playerEntity))
             {
                 isCatch = false;
                 pathFinder.isStopped = false;
@@ -285,13 +322,15 @@ public class Enemy : LivingEntity {
             if (target != null && target.tag == "Player")
             {
                 findPlayer = true;
+                revenge = false;
+                Debug.Log(hit.transform.gameObject.name);
             }
             else if (target == null || (target.tag != "Player" && target.tag != "Enemy"))
             {
                 findPlayer = false;
             }
 
-            if (findPlayer)
+            if (findPlayer || revenge)
             {
                 // 선의 시작점은 총구의 위치
                 bulletLineRenderer.SetPosition(0, eye.transform.position);
@@ -300,8 +339,7 @@ public class Enemy : LivingEntity {
                 bulletLineRenderer.SetPosition(1, plTransform.position);
 
                 // 라인 렌더러를 활성화하여 탄알 궤적을 그림
-                bulletLineRenderer.enabled = true;
-                Debug.Log(hit.transform.gameObject.name);
+                bulletLineRenderer.enabled = true;              
             }
         }
 

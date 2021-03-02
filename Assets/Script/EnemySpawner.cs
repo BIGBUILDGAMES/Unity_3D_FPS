@@ -18,6 +18,10 @@ public class EnemySpawner : MonoBehaviour {
     public float speedMax = 3f; // 최대 속도
     public float speedMin = 1f; // 최소 속도
 
+    float health;
+    float damage;
+    float speed;
+
     public Color strongEnemyColor = Color.red; // 강한 적 AI가 가지게 될 피부색
 
     private List<Enemy> enemies = new List<Enemy>(); // 생성된 적들을 담는 리스트
@@ -71,7 +75,7 @@ public class EnemySpawner : MonoBehaviour {
             // 적의 세기를 0%에서 100% 사이에서 랜덤 결정
             float enemyIntensity = Random.Range(0f, 1f);
             // 적 생성 처리 실행
-            CreateEnemy(enemyIntensity, gunEnemy);
+            CreateEnemy(enemyIntensity, sphereEnemy);
         }
 
         spawnCount += 2;
@@ -91,10 +95,18 @@ public class EnemySpawner : MonoBehaviour {
     // 적을 생성하고 생성한 적에게 추적할 대상을 할당
     private void CreateEnemy(float intensity, Enemy enemyKind)
     {
-        // intensity를 기반으로 적의 능력치 결정
-        float health = Mathf.Lerp(healthMin, healthMax, intensity);
-        float damage = Mathf.Lerp(damageMin, damageMax, intensity);
-        float speed = Mathf.Lerp(speedMin, speedMax, intensity);
+        if (enemyKind == sphereEnemy)
+        {
+            health = 200f;
+            damage = 5f;
+            speed = 5f;
+        }
+        else if (enemyKind == gunEnemy)
+        {
+            health = 400f;
+            damage = 5f;
+            speed = 2f;
+        }
 
         // intensity를 기반으로 하얀색 enemyStrength 사이에서 적의 피부색 결정
         // Color skinColor = Color.Lerp(Color.white, strongEnemyColor, intensity);
