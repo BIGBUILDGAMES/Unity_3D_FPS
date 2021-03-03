@@ -13,6 +13,7 @@ public class Enemy : LivingEntity {
     private NavMeshAgent pathFinder; // 경로계산 AI 에이전트
 
     public ParticleSystem hitEffect; // 피격시 재생할 파티클 효과
+    public ParticleSystem boomEffect; // 피격시 재생할 파티클 효과
     public AudioClip deathSound; // 사망시 재생할 소리
     public AudioClip hitSound; // 피격시 재생할 소리
 
@@ -201,21 +202,21 @@ public class Enemy : LivingEntity {
     public override void OnDamage(float damage, Vector3 hitPoint, Vector3 hitNormal) 
     {
         // 아직 사망하지 않은 경우에만 피격 효과 재생
-        //if (!dead)
-        //{
-        //    // 공격받은 지점과 방향으로 파티클 효과 재생
-        //    hitEffect.transform.position = hitPoint;
-        //    hitEffect.transform.rotation = Quaternion.LookRotation(hitNormal);
-        //    hitEffect.Play();
+        if (!dead)
+        {
+            // 공격받은 지점과 방향으로 파티클 효과 재생
+            hitEffect.transform.position = hitPoint;
+            hitEffect.transform.rotation = Quaternion.LookRotation(hitNormal);
+            hitEffect.Play();
 
-        //    // 피격 효과음 재생
-        //    enemyAudioPlayer.PlayOneShot(hitSound);
-        //}
+            //    // 피격 효과음 재생
+            //    enemyAudioPlayer.PlayOneShot(hitSound);        
 
-        // LivingEntity의 OnDamage()를 실행하여 데미지 적용
-        base.OnDamage(damage, hitPoint, hitNormal);
-        revenge = true;
-        Debug.Log("hit");
+            // LivingEntity의 OnDamage()를 실행하여 데미지 적용
+            base.OnDamage(damage, hitPoint, hitNormal);
+            revenge = true;
+            Debug.Log("hit");
+        }
     }
 
     // 사망 처리
@@ -224,12 +225,15 @@ public class Enemy : LivingEntity {
         // LivingEntity의 Die()를 실행하여 기본 사망 처리 실행
         base.Die();
 
-        //// 다른 AI를 방해하지 않도록 자신의 모든 콜라이더를 비활성화
-        //Collider[] enemyColliders = GetComponents<Collider>();
-        //for (int i = 0; i < enemyColliders.Length; i++)
-        //{
-        //    enemyColliders[i].enabled = false;
-        //}
+        // 다른 AI를 방해하지 않도록 자신의 모든 콜라이더를 비활성화
+        Collider[] enemyColliders = GetComponents<CapsuleCollider>();
+        Rigidbody enemyRigidbody = GetComponent<Rigidbody>();
+        for (int i = 0; i < enemyColliders.Length; i++)
+        {
+            enemyColliders[i].enabled = false;
+        }
+
+        boomEffect.Play();
 
         // AI 추적을 중지하고 내비메시 컴포넌트 비활성화
         pathFinder.isStopped = true;

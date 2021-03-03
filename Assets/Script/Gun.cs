@@ -107,8 +107,11 @@ public class Gun : MonoBehaviour
             hitPosition = fireTransform.position + fireTransform.forward * fireDistance;
         }
 
-        // 발사 이펙트 재생 시작
-        StartCoroutine(ShotEffect(hitPosition));
+        muzzleFlashEffect.Play();
+        gunAudioPlayer.PlayOneShot(shotClip);
+
+        //// 발사 이펙트 재생 시작
+        //StartCoroutine(ShotEffect(hitPosition));
 
         // 남은 탄알 수를 -1
         magAmmo--;
@@ -120,31 +123,31 @@ public class Gun : MonoBehaviour
     }
 
     // 발사 이펙트와 소리를 재생하고 탄알 궤적을 그림
-    private IEnumerator ShotEffect(Vector3 hitPosition)
-    {
-        // 총구 화염 효과 재생
-        muzzleFlashEffect.Play();
-        // 탄피 배출 효과 재생
-        shellEjectEffect.Play();
+    //private IEnumerator ShotEffect(Vector3 hitPosition)
+    //{
+    //    // 총구 화염 효과 재생
+    //    muzzleFlashEffect.Play();
+    //    // 탄피 배출 효과 재생
+    //    // shellEjectEffect.Play();
 
-        // 총격 소리 재생
-        gunAudioPlayer.PlayOneShot(shotClip);
+    //    // 총격 소리 재생
+    //    gunAudioPlayer.PlayOneShot(shotClip);
 
-        //// 선의 시작점은 총구의 위치
-        //bulletLineRenderer.SetPosition(0, fireTransform.position);
+    //    //// 선의 시작점은 총구의 위치
+    //    //bulletLineRenderer.SetPosition(0, fireTransform.position);
 
-        //// 선의 끝점은 입력으로 들어온 충돌 위치
-        //bulletLineRenderer.SetPosition(1, hitPosition);
+    //    //// 선의 끝점은 입력으로 들어온 충돌 위치
+    //    //bulletLineRenderer.SetPosition(1, hitPosition);
 
-        //// 라인 렌더러를 활성화하여 탄알 궤적을 그림
-        //bulletLineRenderer.enabled = true;
+    //    //// 라인 렌더러를 활성화하여 탄알 궤적을 그림
+    //    //bulletLineRenderer.enabled = true;
 
-        // 0.03초 동안 잠시 처리를 대기
-        yield return new WaitForSeconds(0.03f);
+    //    // 0.03초 동안 잠시 처리를 대기
+    //    yield return new WaitForSeconds(0.03f);
 
-        //// 라인 렌더러를 비활성화하여 탄알 궤적을 지움
-        //bulletLineRenderer.enabled = false;
-    }
+    //    //// 라인 렌더러를 비활성화하여 탄알 궤적을 지움
+    //    //bulletLineRenderer.enabled = false;
+    //}
 
     // 재장전 시도
     public bool Reload()

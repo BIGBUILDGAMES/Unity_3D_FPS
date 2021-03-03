@@ -26,10 +26,13 @@ public class EnemySpawner : MonoBehaviour {
 
     private List<Enemy> enemies = new List<Enemy>(); // 생성된 적들을 담는 리스트
     private int wave; // 현재 웨이브
+    private bool playWave; // 현재 웨이브
+    private float delayWave = 10f; // 현재 웨이브
     private int spawnCount = 1;
     private int spawnCount2 = 0;
 
-    private void Update() {
+    private void Update() 
+    {
         // 게임 오버 상태일때는 생성하지 않음
         if (GameManager.instance != null && GameManager.instance.isGameover)
         {
@@ -39,6 +42,11 @@ public class EnemySpawner : MonoBehaviour {
         // 적을 모두 물리친 경우 다음 스폰 실행
         if (enemies.Count <= 0)
         {
+            playWave = false;
+        }
+
+        if (!playWave && delayWave <= 0f)
+        {
             SpawnWave();
         }
 
@@ -47,9 +55,15 @@ public class EnemySpawner : MonoBehaviour {
     }
 
     // 웨이브 정보를 UI로 표시
-    private void UpdateUI() {
+    private void UpdateUI() 
+    {
+        if (!playWave)
+        {
+            delayWave -= Time.deltaTime;
+        }
+
         // 현재 웨이브와 남은 적의 수 표시
-        UIManager.instance.UpdateWaveText(wave, enemies.Count);
+        UIManager.instance.UpdateWaveText(wave, enemies.Count, Mathf.Round(delayWave), playWave);
     }
 
     // 현재 웨이브에 맞춰 적을 생성
@@ -57,7 +71,8 @@ public class EnemySpawner : MonoBehaviour {
     {
         // 웨이브 1 증가
         wave++;
-
+        playWave = true;
+        delayWave = 10f;
         // 현재 웨이브 * 1.5를 반올림한 수만큼 적 생성
         //spawnCount = Mathf.RoundToInt(wave * 1.5f);
 
