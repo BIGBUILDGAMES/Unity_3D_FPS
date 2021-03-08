@@ -96,16 +96,18 @@ public class PlayerMovement : MonoBehaviour
                 moveDir = lookForward * moveInput.y;
             }
 
-            if ((moveInput.y > 0f || moveInput.y < 0f) && (moveInput.x > 0f || moveInput.x < 0f))
-            {
-                rigidbody.MovePosition(rigidbody.position + moveDir * Time.deltaTime * speed / 1.4142135623f);
-                state = false;
-            }
-            else
-            {
-                rigidbody.MovePosition(rigidbody.position + moveDir * Time.deltaTime * speed);
-                state = true;
-            }
+            transform.Translate(moveDir.normalized * Time.deltaTime * speed);
+
+            //if ((moveInput.y > 0f || moveInput.y < 0f) && (moveInput.x > 0f || moveInput.x < 0f))
+            //{
+            //    rigidbody.MovePosition(rigidbody.position + moveDir * Time.deltaTime * speed / 1.4142135623f);
+            //    state = false;
+            //}
+            //else
+            //{
+            //    rigidbody.MovePosition(rigidbody.position + moveDir * Time.deltaTime * speed);
+            //    state = true;
+            //}
 
             //transform.position += moveDir * Time.deltaTime * 5f;
             //transform.forward = lookForward;
