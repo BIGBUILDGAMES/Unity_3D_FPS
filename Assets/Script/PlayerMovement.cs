@@ -86,28 +86,31 @@ public class PlayerMovement : MonoBehaviour
             Vector3 lookForward = new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z).normalized;
             Vector3 lookRight = new Vector3(cameraArm.right.x, 0f, cameraArm.right.z).normalized;
             Vector3 moveDir = lookForward * moveInput.y + lookRight * moveInput.x;
-            speed = 4;
+
+            if (!isJumping)
+                speed = 5;
+
             playerAnimator.SetBool("Run", false);
 
             if (Input.GetKey(KeyCode.W) && playerInput.run && !isJumping)
             {
                 playerAnimator.SetBool("Run", true);
-                speed = 18;                
+                speed = 10;                
                 moveDir = lookForward * moveInput.y;
             }
 
-            transform.Translate(moveDir.normalized * Time.deltaTime * speed);
+            // transform.Translate(moveDir.normalized * Time.deltaTime * speed);
 
-            //if ((moveInput.y > 0f || moveInput.y < 0f) && (moveInput.x > 0f || moveInput.x < 0f))
-            //{
-            //    rigidbody.MovePosition(rigidbody.position + moveDir * Time.deltaTime * speed / 1.4142135623f);
-            //    state = false;
-            //}
-            //else
-            //{
-            //    rigidbody.MovePosition(rigidbody.position + moveDir * Time.deltaTime * speed);
-            //    state = true;
-            //}
+            if ((moveInput.y > 0f || moveInput.y < 0f) && (moveInput.x > 0f || moveInput.x < 0f))
+            {
+                rigidbody.MovePosition(rigidbody.position + moveDir * Time.deltaTime * speed / 1.4142135623f);
+                state = false;
+            }
+            else
+            {
+                rigidbody.MovePosition(rigidbody.position + moveDir * Time.deltaTime * speed);
+                state = true;
+            }
 
             //transform.position += moveDir * Time.deltaTime * 5f;
             //transform.forward = lookForward;
@@ -138,9 +141,9 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider sole)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (sole != null)
         {
             //점프가 가능한 상태로 만듦
             isJumping = false;

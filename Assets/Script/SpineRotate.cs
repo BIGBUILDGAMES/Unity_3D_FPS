@@ -8,6 +8,7 @@ public class SpineRotate : MonoBehaviour
     public Transform spineTrans;
     public Transform gunTrans;
     public Transform handTrans;
+    public Transform gunArmTrans;
 
     private Vector3 gunVec;
 
@@ -18,8 +19,17 @@ public class SpineRotate : MonoBehaviour
     float rotateY; // 마우스 X각도
     float rotateZ; // 마우스 X각도
 
+    bool gunPositionSet = false;
+
     void LateUpdate()
     {
+        if (!gunPositionSet)
+        {
+            gunArmTrans.position = gunTrans.position;
+            gunPositionSet = true;
+        }
+
+
         float horizontal = Input.GetAxis("Mouse X"); // 마우스의 X축 움직임을 감지
         float vertical = Input.GetAxis("Mouse Y"); // 마우스의 Y축 움직임을 감지
 
@@ -52,11 +62,14 @@ public class SpineRotate : MonoBehaviour
         //    playerTransform.transform.rotation.x,
         //    mouseX,
         //    playerTransform.transform.rotation.z);
+        
+
         spineTrans.Rotate(Vector3.right, mouseZ, Space.World);  //  세로
         gunTrans.Rotate(Vector3.right, mouseZ, Space.World);  //  세로
+        gunTrans.position = gunArmTrans.position;
         transform.Rotate(Vector3.up, mouseX, Space.World);  // 가로
 
-        //Debug.Log("" + mouseZ);
+        Debug.Log("" + mouseZ);
     }
 
     //public Transform target; // 바라볼 타겟 

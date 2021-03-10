@@ -24,7 +24,7 @@ public class Enemy : LivingEntity {
     private float Distance = 20f;
     private float revengeTime = 0f;
 
-    public float damage = 20f; // 공격력
+    public float damage; // 공격력
     public float timeBetAttack = 5f; // 공격 간격
 
     private bool isCatch;
