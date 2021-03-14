@@ -69,7 +69,7 @@ public class SpineRotate : MonoBehaviour
         gunTrans.position = gunArmTrans.position;
         transform.Rotate(Vector3.up, mouseX, Space.World);  // 가로
 
-        Debug.Log("" + mouseZ);
+        //Debug.Log("" + mouseZ);
     }
 
     //public Transform target; // 바라볼 타겟 
