@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3339048}
   - component: {fileID: 2378580}
   - component: {fileID: 6478192}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wall_big_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,6 +56,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -80,6 +81,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!64 &6478192
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -106,7 +108,7 @@ GameObject:
   - component: {fileID: 3390086}
   - component: {fileID: 2314096}
   - component: {fileID: 6479478}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wall_big_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -150,6 +152,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -174,6 +177,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!64 &6479478
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -200,7 +204,7 @@ GameObject:
   - component: {fileID: 6444258}
   - component: {fileID: 20520570}
   - component: {fileID: -4626095895216943378}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wall_big
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -275,6 +279,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -299,3 +304,4 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}

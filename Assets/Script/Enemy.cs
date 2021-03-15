@@ -133,7 +133,9 @@ public class Enemy : LivingEntity {
             }
 
             if (findPlayer || revenge)
-                pathFinder.SetDestination(player.transform.position);
+            { 
+                //pathFinder.SetDestination(player.transform.position);
+            }
             else
                 pathFinder.SetDestination(nexus.transform.position);
 
@@ -278,7 +280,7 @@ public class Enemy : LivingEntity {
             else
             {
                 pathFinder.isStopped = false;
-                Debug.Log("sfdfsdfdff");
+                //Debug.Log("sfdfsdfdff");
             }
         }
     }
@@ -325,9 +327,14 @@ public class Enemy : LivingEntity {
             // 플레이어를 감지 했다면
             if (target != null && target.tag == "Player")
             {
-                findPlayer = true;
-                revenge = false;
-                Debug.Log(hit.transform.gameObject.name);
+                // 본인 위치 y값이랑 타겟(플레이어) 위치 y값 비교 -> 차이가 3 이상 
+                if (findPlayer == false)
+                {
+                    StartCoroutine(CoroutineSetDestination());
+                }
+                //findPlayer = true;
+                //revenge = false;
+                //Debug.Log(hit.transform.gameObject.name);
             }
             else if (target == null || (target.tag != "Player" && target.tag != "Enemy"))
             {
@@ -356,6 +363,24 @@ public class Enemy : LivingEntity {
         //    // 탄알이 최대 사정거리까지 날아갔을 때의 위치를 충돌 위치로 사용
         //    hitPosition = fireTransform.position + fireTransform.forward * fireDistance;
         //}
+    }
+
+    public IEnumerator CoroutineSetDestination()
+    {
+        Debug.Log("CoroutineSetDestination()");
+        findPlayer = true;
+        revenge = false;
+
+        while (findPlayer)
+        {
+            // 목표 지점 설정
+            pathFinder.SetDestination(player.transform.position);
+
+            // 일정 시간 대기 (이동 시간)
+            yield return new WaitForSeconds(1f);
+        }
+
+        yield break;
     }
 }
 

@@ -23,11 +23,11 @@ public class TPSObstacleTransparent : MonoBehaviour
     private string ShaderColorParamName = "_Color";
     private Shader TransparentShader;
     private RaycastHit[] TransparentHits;
-    // private LayerMask TransparentRayLayer;
+    private LayerMask TransparentRayLayer;
 
     void Start()
     {
-        // TransparentRayLayer = 1 << LayerMask.NameToLayer(DefineKey.LayerObstacle);
+        TransparentRayLayer = 1 << LayerMask.NameToLayer("Structure");
         TransparentShader = Shader.Find("Legacy Shaders/Transparent/Diffuse");
     }
 
@@ -71,9 +71,9 @@ public class TPSObstacleTransparent : MonoBehaviour
 
     void HitRayTransparentObject(Vector3 start, Vector3 direction, float distance)
     {
-        TransparentHits = Physics.RaycastAll(start, direction, distance /*, TransparentRayLayer*/);  // 레이가 관통하여 계속 검사함
+        TransparentHits = Physics.RaycastAll(start, direction, distance, TransparentRayLayer);  // 레이가 관통하여 계속 검사함
 
-        Debug.Log(TransparentHits.Length + "개의 오브젝트 반투명 작동");
+        //Debug.Log(TransparentHits.Length + "개의 오브젝트 반투명 작동");
         // 레이와 충돌된 오브젝트가 있다면
         for (int i = 0; i < TransparentHits.Length; i++)    
         {

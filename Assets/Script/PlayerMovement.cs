@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
     private float speed = 4f;
 
     private PlayerInput playerInput;    // 플레이어 입력을 알려주는 컴포넌트
-    private Rigidbody rigidbody;  // 플레이어 캐릭터의 리지드바디
+    new private Rigidbody rigidbody;  // 플레이어 캐릭터의 리지드바디
     private Animator playerAnimator;    // 플레이어 캐릭터의 애니메이터
     private int JumpPower = 6;
     public bool isJumping = false;
